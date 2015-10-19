@@ -6,11 +6,12 @@ var gulp = require('gulp'),
     del = require('del'),
     beep = require('beepbeep'),
     colors = require('colors'),
+    rename = require('gulp-rename'),
     sass = require('gulp-sass');
 
 
 var basePath = {
-  src: '.',
+  src: './src',
   dist: './dist'
 };
 
@@ -38,14 +39,23 @@ var basePath = {
 
 
 // STYLES =====================================================================
-   gulp.task('css', function() {
+  gulp.task('css', function() {
     return gulp.src( basePath.src + '/*.scss' )
       .pipe(plumber({
         errorHandler: onError
       }))
       .pipe(sass())
+      .pipe(gulp.dest( basePath.dist ))
+  });
+
+  gulp.task('copy-scss', function() {
+    return gulp.src( basePath.src + '/*.scss' )
+      .pipe(rename({
+        prefix: "_",
+      }))
       .pipe(gulp.dest( basePath.dist ));
   });
+
 
 
 // HTML =====================================================================
@@ -80,6 +90,7 @@ var basePath = {
       'clean',
       [
         'css',
+        'copy-scss',
         'html'
       ],
     callback);
